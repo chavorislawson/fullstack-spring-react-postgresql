@@ -17,7 +17,7 @@ class App extends React.Component {
       employees: [],
       attributes: [],
       page: 1,
-      pageSize: 2,
+      pageSize: 6,
       links: {},
       loggedInManager: this.props.loggedInManager,
     };
@@ -30,6 +30,7 @@ class App extends React.Component {
     this.refreshAndGoToLastPage = this.refreshAndGoToLastPage.bind(this);
   }
 
+  //This does not load from the server, this loads from the webs cache. I want it to load/update the cache when the server changes
   loadFromServer(pageSize) {
     follow(client, root, [{ rel: "employees", params: { size: pageSize } }])
       .then((employeeCollection) => {
@@ -68,6 +69,8 @@ class App extends React.Component {
         return when.all(employeePromises);
       })
       .done((employees) => {
+        console.log("Employees loaded from server");
+        console.log(employees);
         this.setState({
           page: this.page,
           employees: employees,
@@ -154,15 +157,14 @@ class App extends React.Component {
 
   onDelete(employee) {
     client({ method: "DELETE", path: employee.entity._links.self.href }).done(
+      (response) => {/* let the websocket handle updating the UI */},
       (response) => {
-        (response) => {
-          if (response.status.code === 403) {
-            alert(
-              "ACCESS DENIED: You are not authorized to delete " +
-                employee.entity._links.self.href
-            );
-          }
-        };
+        if (response.status.code === 403) {
+          alert(
+            "ACCESS DENIED: You are not authorized to delete " +
+              employee.entity._links.self.href
+          );
+        }
       }
     );
   }
@@ -346,7 +348,8 @@ class UpdateDialog extends React.Component {
       "updateEmployee-" + this.props.employee.entity._links.self.href;
     const isManagerCorrect =
       this.props.employee.entity.manager.name == this.props.loggedInManager;
-
+    console.log("loggedInManager");
+    console.log(this.props.loggedInManager);
     if (isManagerCorrect === false) {
       return (
         <div>
@@ -465,6 +468,8 @@ class EmployeeList extends React.Component {
       );
     }
 
+    console.log(this.props.employees);
+
     return (
       <div>
         {pageInfo}
@@ -508,7 +513,7 @@ class Employee extends React.Component {
         <td>{this.props.employee.entity.firstName}</td>
         <td>{this.props.employee.entity.lastName}</td>
         <td>{this.props.employee.entity.description}</td>
-        {/* <td>{this.props.employee.entity.manager.name}</td> */}
+        <td>{this.props.employee.entity.manager.name}</td>
         <td>
           <UpdateDialog
             employee={this.props.employee}

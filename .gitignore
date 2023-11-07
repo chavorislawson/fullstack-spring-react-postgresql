@@ -3,10 +3,13 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-.node_modules/
 .mvn/
-.package-lock.json
-.restful.iml
+
+/node_modules
+package-lock.json
+src/main/resources/static/built/
+src/main/resources/project-plan.md
+
 
 ### STS ###
 .apt_generated
@@ -22,6 +25,7 @@ target/
 *.iws
 *.iml
 *.ipr
+.restful.iml
 
 ### NetBeans ###
 /nbproject/private/

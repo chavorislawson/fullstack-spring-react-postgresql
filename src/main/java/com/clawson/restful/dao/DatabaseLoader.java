@@ -7,9 +7,12 @@ import com.clawson.restful.repository.EmployeeRepository;
 import com.clawson.restful.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 
@@ -20,6 +23,7 @@ public class DatabaseLoader implements CommandLineRunner{
     //private static final Logger log = LoggerFactory.getLogger(DatabaseLoader.class);
     private final EmployeeRepository employees;
     private final ManagerRepository managers;
+
 
      @Autowired
      public DatabaseLoader(EmployeeRepository employees, ManagerRepository managerRepository){
@@ -36,7 +40,10 @@ public class DatabaseLoader implements CommandLineRunner{
          SecurityContextHolder.getContext().setAuthentication(
                  new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
          );
+         System.out.printf("Before setting auth object\nAuthenticate name: %s\nAuthentication principal: %s\n\n",SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
+         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+         System.out.printf("After setting auth with chavo\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(), auth.getPrincipal());
 
          this.employees.save(new Employee("Chavoris", "Lawson", "Billionaire", chavo));
          this.employees.save(new Employee("Bilbo", "Baggins", "burglar", chavo));
@@ -47,12 +54,16 @@ public class DatabaseLoader implements CommandLineRunner{
                  new UsernamePasswordAuthenticationToken("traci","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
          );
 
+         auth = SecurityContextHolder.getContext().getAuthentication();
+         System.out.printf("After setting auth with Traci\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
 
          this.employees.save(new Employee("Samwise", "Gamgee", "gardener", traci));
 	 	this.employees.save(new Employee("Meriadoc", "Brandybuck", "pony rider", traci));
 	 	this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", traci));
 
-         SecurityContextHolder.clearContext();
+         //SecurityContextHolder.clearContext();
+
+         System.out.printf("After clearing context\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
      }
 
     //from building rest tutorial

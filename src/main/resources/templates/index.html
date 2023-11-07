@@ -7,7 +7,8 @@
 </head>
 <body>
     <div>
-        Hello, <span id="managername">user</span>. <!-- authentication is popping up null and I can't access the value name on it becasue of that issue-->
+        
+        Hello, <span id="managername" th:text="${#authentication.name}">user</span>. <!-- authentication is popping up null and I can't access the value name on it because of that issue-->
         <form th:action="@{/logout}" method="post">
             <input type="submit" value="Log Out"/>
         </form>
