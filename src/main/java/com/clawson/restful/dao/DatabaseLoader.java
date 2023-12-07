@@ -40,10 +40,10 @@ public class DatabaseLoader implements CommandLineRunner{
          SecurityContextHolder.getContext().setAuthentication(
                  new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
          );
-         System.out.printf("Before setting auth object\nAuthenticate name: %s\nAuthentication principal: %s\n\n",SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+         //System.out.printf("Before setting auth object\nAuthenticate name: %s\nAuthentication principal: %s\n\n",SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-         System.out.printf("After setting auth with chavo\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(), auth.getPrincipal());
+//         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//         System.out.printf("After setting auth with chavo\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(), auth.getPrincipal());
 
          this.employees.save(new Employee("Chavoris", "Lawson", "Billionaire", chavo));
          this.employees.save(new Employee("Bilbo", "Baggins", "burglar", chavo));
@@ -54,8 +54,8 @@ public class DatabaseLoader implements CommandLineRunner{
                  new UsernamePasswordAuthenticationToken("traci","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
          );
 
-         auth = SecurityContextHolder.getContext().getAuthentication();
-         System.out.printf("After setting auth with Traci\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
+//         auth = SecurityContextHolder.getContext().getAuthentication();
+//         System.out.printf("After setting auth with Traci\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
 
          this.employees.save(new Employee("Samwise", "Gamgee", "gardener", traci));
 	 	this.employees.save(new Employee("Meriadoc", "Brandybuck", "pony rider", traci));
@@ -63,7 +63,7 @@ public class DatabaseLoader implements CommandLineRunner{
 
          //SecurityContextHolder.clearContext();
 
-         System.out.printf("After clearing context\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
+         //System.out.printf("After clearing context\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
      }
 
     //from building rest tutorial
