@@ -25,46 +25,46 @@ public class DatabaseLoader implements CommandLineRunner{
     private final ManagerRepository managers;
 
 
-     @Autowired
-     public DatabaseLoader(EmployeeRepository employees, ManagerRepository managerRepository){
-         this.employees = employees;
-         this.managers = managerRepository;
-     }
+    @Autowired
+    public DatabaseLoader(EmployeeRepository employees, ManagerRepository managerRepository){
+        this.employees = employees;
+        this.managers = managerRepository;
+    }
 
-     @Override
-     public void run(String ... strings) throws Exception{
+    @Override
+    public void run(String ... strings) throws Exception{
 
-         Manager chavo = this.managers.save(new Manager("chavo", "lawson", "ROLE_MANAGER"));
-         Manager traci = this.managers.save(new Manager("traci", "wilcox", "ROLE_MANAGER"));
+        Manager chavo = this.managers.save(new Manager("chavo", "lawson", "ROLE_MANAGER"));
+        Manager traci = this.managers.save(new Manager("traci", "wilcox", "ROLE_MANAGER"));
 
-         SecurityContextHolder.getContext().setAuthentication(
-                 new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
-         );
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
+        );
          //System.out.printf("Before setting auth object\nAuthenticate name: %s\nAuthentication principal: %s\n\n",SecurityContextHolder.getContext().getAuthentication().getName(), SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
 //         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //         System.out.printf("After setting auth with chavo\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(), auth.getPrincipal());
 
-         this.employees.save(new Employee("Chavoris", "Lawson", "Billionaire", chavo));
-         this.employees.save(new Employee("Bilbo", "Baggins", "burglar", chavo));
-	 	this.employees.save(new Employee("Gandalf", "the Grey", "wizard", chavo));
+        this.employees.save(new Employee("Chavoris", "Lawson", "Billionaire", chavo));
+        this.employees.save(new Employee("Bilbo", "Baggins", "burglar", chavo));
+        this.employees.save(new Employee("Gandalf", "the Grey", "wizard", chavo));
 
 
-         SecurityContextHolder.getContext().setAuthentication(
-                 new UsernamePasswordAuthenticationToken("traci","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
-         );
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("traci","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER"))
+        );
 
 //         auth = SecurityContextHolder.getContext().getAuthentication();
 //         System.out.printf("After setting auth with Traci\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
 
-         this.employees.save(new Employee("Samwise", "Gamgee", "gardener", traci));
-	 	this.employees.save(new Employee("Meriadoc", "Brandybuck", "pony rider", traci));
-	 	this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", traci));
+        this.employees.save(new Employee("Samwise", "Gamgee", "gardener", traci));
+        this.employees.save(new Employee("Meriadoc", "Brandybuck", "pony rider", traci));
+        this.employees.save(new Employee("Peregrin", "Took", "pipe smoker", traci));
 
          //SecurityContextHolder.clearContext();
 
          //System.out.printf("After clearing context\nAuthenticate name: %s\nAuthentication principal: %s\n\n",auth.getName(),auth.getPrincipal());
-     }
+    }
 
     //from building rest tutorial
 //    @Bean

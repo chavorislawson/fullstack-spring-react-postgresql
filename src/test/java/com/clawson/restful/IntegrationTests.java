@@ -31,6 +31,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -48,21 +49,21 @@ public class IntegrationTests {
     private WebApplicationContext context;
 
     //@Autowired
-    private Manager manager; //probably because they're not interfaces. They are the type, nothing is depending on this
+    //private Manager manager; //probably because they're not interfaces. They are the type, nothing is depending on this
     //@Autowired
-    private Employee employee;
+    //private Employee employee;
     //@Autowired
     private Authentication auth;
 
     @BeforeEach
     public void setup(){
-        this.mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-        this.manager = new Manager("Hamilton", "Lawson", "ROLE_MANAGER");
-        this.employee = new Employee("Chavo", "Lawson", "Test", this.manager);
+        //this.mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        // this.manager = new Manager("Hamilton", "Lawson", "ROLE_MANAGER");
+        // this.employee = new Employee("Chavo", "Lawson", "Test", this.manager);
 
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-        this.auth = SecurityContextHolder.getContext().getAuthentication();
+        // SecurityContextHolder.getContext().setAuthentication(
+        //         new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+        // this.auth = SecurityContextHolder.getContext().getAuthentication();
     }
 
     /*
@@ -74,40 +75,46 @@ public class IntegrationTests {
     maybe other things
      */
 
-//     @Test
-//     public void testGetEmployeesUnauthenticated() throws Exception{
-// //        Manager manager = new Manager("Hamilton", "Lawson", "ROLE_MANAGER");
-// //        Employee employee = new Employee("Chavo", "Lawson", "Test", manager);
+    @Test
+    public void testGetEmployeesSuccess() throws Exception{
 
-// //        SecurityContextHolder.getContext().setAuthentication(
-// //                new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-// //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-// //        Principal p = new Principal()k
+        mvc.perform(get("/api/employees").contentType(MediaTypes.HAL_JSON))
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    public void testGetEmployeesManagerSuccess() throws Exception{
 
-//         mvc.perform(get("/api/employees").contentType("application/hal+json"))
-//                 .andExpect(status().isOk())
-//                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                 .andExpect(jsonPath("$[0].firstName", is(this.employee.getFirstName())));
-//     }
+        mvc.perform(get("/api/employees").contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$._embedded.employees[0].manager.name", is("chavo")));
+    }
 
     @Test
     @WithMockUser(value = "chavo")
-    public void testGetEmployeesWithMockUser() throws Exception{
-//        Manager manager = new Manager("Hamilton", "Lawson", "ROLE_MANAGER");
-//        Employee employee = new Employee("Chavo", "Lawson", "Test", manager);
+    public void testGetEmployeesWithMockUserForbidden() throws Exception{
 
-//        SecurityContextHolder.getContext().setAuthentication(
-//                new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Principal p = new Principal()k
+        mvc.perform(get("/api/employees").contentType(MediaTypes.HAL_JSON))
+                .andExpect(status().isForbidden());
+    }
 
-        System.out.printf("Auth username: %s", this.auth.getName());
+    @Test
+    @WithMockUser(value = "chavo")
+    public void testGetEmployeesWithMockUserSuccess() throws Exception{
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("chavo","doesn't matter", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
+        this.auth = SecurityContextHolder.getContext().getAuthentication();
+
         mvc.perform(get("/api/employees").contentType(MediaTypes.HAL_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON));
+                .andExpect(content().contentTypeCompatibleWith(MediaTypes.HAL_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$._embedded.employees[0].manager.name", is(this.auth.getName())));
+                //how to get the session attrs for this request
                 //.andExpect(jsonPath("$[0].firstName", is(this.employee.getFirstName())));
         //fail()
     }
+
+    
 
 }

@@ -24,18 +24,18 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity(prePostEnabled = true) //deprecated replaced
 public class SecurityConfiguration { //base class for writing a security policy
 
-    @Autowired
-    private SpringDataJpaUserDetailsService userDetailsService;
+        @Autowired
+        private SpringDataJpaUserDetailsService userDetailsService;
 
-    @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception { // All I needed to do was autowire this
-        auth
+        @Autowired
+        public void configure(AuthenticationManagerBuilder auth) throws Exception { // All I needed to do was autowire this
+                auth
                 .userDetailsService(this.userDetailsService)
                 .passwordEncoder(Manager.PASSWORD_ENCODER);
-    }
+        }
 
-   @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { //ended up changing it since this is what it was replaced with
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { //ended up changing it since this is what it was replaced with
 
         http
                 .authorizeHttpRequests((requests) -> requests
@@ -54,5 +54,5 @@ public class SecurityConfiguration { //base class for writing a security policy
                                 //.permitAll()
                         );
         return http.build();
-    }
+        }
 }
