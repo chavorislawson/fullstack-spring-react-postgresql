@@ -8,6 +8,8 @@ const when = require("when");
 const follow = require("./follow");
 const stompClient = require("./websocket-listener");
 
+//const document = Document; //fix this
+
 var root = "/api";
 
 class App extends React.Component {
@@ -89,6 +91,8 @@ class App extends React.Component {
         entity: newEmployee,
         headers: { "Content-Type": "application/json" },
       });
+      console.log(response.entity._links.self.href); //http://localhost:8080/api/employees?page=0&size=20
+      console.log(response.entity)
     });
   }
 
@@ -530,7 +534,7 @@ class Employee extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <App loggedInManager={document.getElementById("managername").innerHTML} />,
-  document.getElementById("react")
-);
+// ReactDOM.render(
+//   <App loggedInManager={document.getElementById("managername").innerHTML} />,
+//   document.getElementById("react")
+// );

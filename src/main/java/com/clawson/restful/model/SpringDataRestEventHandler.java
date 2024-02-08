@@ -26,6 +26,7 @@ public class SpringDataRestEventHandler {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Manager manager = this.managerRepository.findByName(name);
         if(manager == null) {
+            System.out.println("I'm null for" + name);//This is what's allowing me to do put when manager doesn't exist
             Manager newManager = new Manager();
             newManager.setName(name);
             newManager.setRoles(new String[]{"ROLE_MANAGER"});
